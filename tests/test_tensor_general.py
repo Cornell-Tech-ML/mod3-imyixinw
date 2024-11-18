@@ -180,6 +180,8 @@ if numba.cuda.is_available():
     def test_sum_practice_other_dims() -> None:
         x = [[random.random() for i in range(32)] for j in range(16)]
         b = minitorch.tensor(x)
+        print("DEBUG x = ", x)
+        print("DEBUG b = ", b)
         s = b.sum(1)
         b2 = minitorch.tensor(x, backend=shared["cuda"])
         out = b2.sum(1)

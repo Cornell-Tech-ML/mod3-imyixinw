@@ -315,6 +315,7 @@ def test_two_grad_broadcast(
     data: DataObject,
 ) -> None:
     """Run backward for all two arg functions above with broadcast."""
+    print("Running broadcast test")
     t1, t2 = data.draw(shaped_tensors(2, backend=shared[backend]))
     name, base_fn, tensor_fn = fn
 

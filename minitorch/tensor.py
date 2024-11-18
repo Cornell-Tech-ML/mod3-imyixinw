@@ -379,6 +379,7 @@ class Tensor:
         if dim is None:
             return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
         else:
+            print("DEBUG FOR 3.3, dim = ", dim)
             return Sum.apply(self, self._ensure_tensor(dim))
 
     def mean(self, dim: Optional[int] = None) -> Tensor:

@@ -402,6 +402,7 @@ def tensor_reduce(
     ) -> None:
         
         # HERE: debug for 3.3
+        print("DEBUG: RUN TENSOR REDUCE")
         out_index: Index = np.zeros(MAX_DIMS, np.int32)
         reduce_size = a_shape[reduce_dim]
         for i in range(len(out)):

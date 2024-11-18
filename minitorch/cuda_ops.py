@@ -237,11 +237,12 @@ def tensor_zip(
 
         if i < out_size:
             to_index(i, out_shape, out_index)
-            broadcast_index(out_index, out_shape, a_shape, a_index)
-            broadcast_index(out_index, out_shape, b_shape, b_index)
-
             out_pos = index_to_position(out_index, out_strides)
+
+            broadcast_index(out_index, out_shape, a_shape, a_index)
             a_pos = index_to_position(a_index, a_strides)
+
+            broadcast_index(out_index, out_shape, b_shape, b_index)
             b_pos = index_to_position(b_index, b_strides)
 
             out[out_pos] = fn(a_storage[a_pos], b_storage[b_pos])
@@ -279,18 +280,29 @@ def _sum_practice(out: Storage, a: Storage, size: int) -> None:
     # TODO: Implement for Task 3.3.
     # raise NotImplementedError("Need to implement for Task 3.3")
 
-    cache[pos] = a[i] if i < size else 0.0
+    if i < size:
+        cache[pos] = float(a[i])
+    else:
+        cache[pos] = 0.0
     cuda.syncthreads()
 
-    stride = 1
-    while stride < BLOCK_DIM:
-        if pos % (2 * stride) == 0 and pos + stride < BLOCK_DIM:
-            cache[pos] += cache[pos + stride]
-        cuda.syncthreads()
-        stride *= 2
+    # stride = 1
+    # while stride < BLOCK_DIM:
+    #     if pos % (2 * stride) == 0 and pos + stride < BLOCK_DIM:
+    #         cache[pos] += cache[pos + stride]
+    #     stride *= 2
+    #     cuda.syncthreads()
 
-    if pos == 0:
-        out[cuda.blockIdx.x] = cache[0]
+    # if pos == 0:
+    #     out[cuda.blockIdx.x] = cache[0]
+
+    if i < size:
+        for stride in range(1, BLOCK_DIM):
+            if pos % (2 * stride) == 0:
+                cache[pos] += cache[pos + stride]
+            cuda.syncthreads()
+        if pos == 0:
+            out[cuda.blockIdx.x] = cache[0]
 
 
 jit_sum_practice = cuda.jit()(_sum_practice)

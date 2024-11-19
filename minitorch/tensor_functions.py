@@ -190,7 +190,9 @@ class Sum(Function):
         # HERE: debug for 3.3
         print("Sum forward")
         print('a.backend.cuda ', a.backend.cuda)
-        return a.f.add_reduce(a, int(dim.item()))
+        res = a.f.add_reduce(a, int(dim.item()))
+        print('DEBUG res of add_reduce: ', res)
+        return res
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:

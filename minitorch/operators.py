@@ -16,7 +16,6 @@ def id(x: float) -> float:
 
 def add(x: float, y: float) -> float:
     """Add `x` and `y`"""
-    print("DEBUG: RUN OPERATORS ADD")
     return x + y
 
 

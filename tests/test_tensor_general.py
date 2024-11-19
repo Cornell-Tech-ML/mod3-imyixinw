@@ -154,6 +154,7 @@ if numba.cuda.is_available():
 
     @pytest.mark.task3_3
     def test_sum_practice3() -> None:
+        print("Running sum practice 3")
         x = [random.random() for i in range(48)]
         b = minitorch.tensor(x)
         s = b.sum()[0]

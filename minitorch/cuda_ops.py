@@ -282,20 +282,27 @@ def _sum_practice(out: Storage, a: Storage, size: int) -> None:
 
     print("DEBUG RUN CUDA SUM PRACTICE")
 
-    if i < size:
-        cache[pos] = float(a[i])
-        cuda.syncthreads()
-    else:
-        cache[pos] = 0.0
+    cache[pos] = float(a[i]) if i < size else 0.0
+    cuda.syncthreads()
 
-    if i < size:
-        for stride in range(1, BLOCK_DIM):
-            if pos % (2 * stride) == 0:
-                cache[pos] += cache[pos + stride]
-                cuda.syncthreads()
-        if pos == 0:
-            out[cuda.blockIdx.x] = cache[0]
-    # print('DEBUG: out = ', out)
+    stride = 1
+    while stride < BLOCK_DIM:
+        if pos % (2 * stride) == 0 and pos + stride < BLOCK_DIM:
+            cache[pos] += cache[pos + stride]
+        cuda.syncthreads()
+        stride *= 2
+
+    if pos == 0:
+        out[cuda.blockIdx.x] = cache[0]
+
+    # if i < size:
+    #     for stride in range(1, BLOCK_DIM):
+    #         if pos % (2 * stride) == 0:
+    #             cache[pos] += cache[pos + stride]
+    #             cuda.syncthreads()
+    #     if pos == 0:
+    #         out[cuda.blockIdx.x] = cache[0]
+    # # print('DEBUG: out = ', out)
 
 
 jit_sum_practice = cuda.jit()(_sum_practice)

@@ -189,7 +189,7 @@ class Sum(Function):
         """Forward pass for the Sum function"""
         # HERE: debug for 3.3
         print("Sum forward")
-        print('a.backend ', a.backend)
+        print('a.backend ', a.backend.cuda)
         return a.f.add_reduce(a, int(dim.item()))
         # ctx.save_for_backward(a, dim)
         # if dim:

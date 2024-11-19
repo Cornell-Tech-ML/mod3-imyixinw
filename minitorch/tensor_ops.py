@@ -413,16 +413,6 @@ def tensor_reduce(
                 j = index_to_position(out_index, a_strides)
                 out[o] = fn(out[o], a_storage[j])
 
-        # out_index = np.array(out_shape)
-
-        # for i in range(len(out)):
-        #     to_index(i, out_shape, out_index)
-        #     for j in range(a_shape[reduce_dim]):
-        #         a_index = out_index.copy()
-        #         a_index[reduce_dim] = j
-
-        #         out[i] = fn(out[i], a_storage[index_to_position(a_index, a_strides)])
-
     return _reduce
 
 

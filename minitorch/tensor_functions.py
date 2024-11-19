@@ -189,13 +189,8 @@ class Sum(Function):
         """Forward pass for the Sum function"""
         # HERE: debug for 3.3
         print("Sum forward")
-        print('a.backend ', a.backend.cuda)
+        print('a.backend.cuda ', a.backend.cuda)
         return a.f.add_reduce(a, int(dim.item()))
-        # ctx.save_for_backward(a, dim)
-        # if dim:
-        #     return a.f.add_reduce(a, int(dim.item()))
-        # else:
-        #     return a.f.add_reduce(a.contiguous().view(int(operators.prod(a.shape))), 0)
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
@@ -204,11 +199,6 @@ class Sum(Function):
         # HERE: debug for 3.3
         print("Sum backward")
         return grad_output, 0.0
-        # a, dim = ctx.saved_values
-        # if dim:
-        #     return a.expand(grad_output), zeros(dim.shape)
-        # else:
-        #     return a.expand(grad_output)
 
 
 class LT(Function):

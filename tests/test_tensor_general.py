@@ -183,9 +183,9 @@ if numba.cuda.is_available():
         print("DEBUG x = ", x)
         print("DEBUG b = ", b)
         s = b.sum(1)
+        print("DEBUG s = ", s)
         b2 = minitorch.tensor(x, backend=shared["cuda"])
         out = b2.sum(1)
-        print("DEBUG s = ", s)
         print("DEBUG out = ", out)
         for i in range(16):
             assert_close(s[i, 0], out[i, 0])

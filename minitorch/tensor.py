@@ -377,17 +377,14 @@ class Tensor:
         #     return res.view(1)
         # HERE
         if dim is None:
-            return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
+            # return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
+            return Sum.apply(self)
         else:
             print("DEBUG FOR 3.3, dim = ", dim)
             return Sum.apply(self, self._ensure_tensor(dim))
 
     def mean(self, dim: Optional[int] = None) -> Tensor:
         """Mean over a dimension"""
-        # if dim:
-        #     return Sum.apply(self, self._ensure_tensor(dim)) / self.shape[dim]
-        # return Sum.apply(self) / operators.prod(self.shape)
-        # HERE
         if dim is not None:
             return self.sum(dim) / self.shape[dim]
         else:

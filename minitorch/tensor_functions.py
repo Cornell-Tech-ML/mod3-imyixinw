@@ -14,7 +14,7 @@ from .autodiff import Context
 from .tensor_ops import SimpleBackend, TensorBackend
 
 if TYPE_CHECKING:
-    from typing import Any, List, Tuple, Optional
+    from typing import Any, List, Tuple, Optional, Union
 
     from .tensor import Tensor
     from .tensor_data import UserIndex, UserShape
@@ -185,11 +185,16 @@ class Exp(Function):
 
 class Sum(Function):
     @staticmethod
-    def forward(ctx: Context, a: Tensor, dim: Tensor) -> Tensor:
+    def forward(ctx: Context, a: Tensor, dim: Optional[Tensor] = None) -> Tensor:
         """Forward pass for the Sum function"""
         # HERE: debug for 3.3
-        ctx.save_for_backward(a.shape, dim)
-        return a.f.add_reduce(a, int(dim.item()))
+        # ctx.save_for_backward(a.shape, dim)
+        # return a.f.add_reduce(a, int(dim.item()))
+        ctx.save_for_backward(a, dim)
+        if dim is None:
+            return a.f.add_reduce(a.contiguous().view(a.size), 0)
+        else:
+            return a.f.add_reduce(a, int(dim.item()))
         # ctx.save_for_backward(a, dim)
         # if dim:
         #     return a.f.add_reduce(a, int(dim.item()))
@@ -197,11 +202,17 @@ class Sum(Function):
         #     return a.f.add_reduce(a.contiguous().view(int(operators.prod(a.shape))), 0)
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
+    # def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
+    def backward(ctx: Context, grad_output: Tensor) -> Union[Tensor, Tuple[Tensor, Tensor]]:
         """Backward pass for the Sum function"""
         # HERE: debug for 3.3
-        a_shape, dim = ctx.saved_values
-        return grad_output, 0.0
+        # a_shape, dim = ctx.saved_values
+        # return grad_output, 0.0
+        (a, dim) = ctx.saved_values
+        if dim is None:
+            return a.expand(grad_output)
+        else:
+            return a.expand(grad_output), zeros(dim.shape)
         # a, dim = ctx.saved_values
         # if dim:
         #     return a.expand(grad_output), zeros(dim.shape)

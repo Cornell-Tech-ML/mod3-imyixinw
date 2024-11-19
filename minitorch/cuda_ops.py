@@ -280,6 +280,8 @@ def _sum_practice(out: Storage, a: Storage, size: int) -> None:
     # TODO: Implement for Task 3.3.
     # raise NotImplementedError("Need to implement for Task 3.3")
 
+    print("DEBUG RUN CUDA SUM PRACTICE")
+
     if i < size:
         cache[pos] = float(a[i])
         cuda.syncthreads()
@@ -293,7 +295,7 @@ def _sum_practice(out: Storage, a: Storage, size: int) -> None:
                 cuda.syncthreads()
         if pos == 0:
             out[cuda.blockIdx.x] = cache[0]
-        print('DEBUG: out = ', out)
+    # print('DEBUG: out = ', out)
 
 
 jit_sum_practice = cuda.jit()(_sum_practice)

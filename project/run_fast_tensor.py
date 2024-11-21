@@ -103,7 +103,7 @@ class FastTrain:
                 log_fn(epoch, total_loss, correct, losses)
 
         end = time.time()
-        print(f'Time per epoch: {(end - start) / max_epochs}')
+        print(f'Time per epoch (s): {(end - start) / max_epochs}')
 
 
 if __name__ == "__main__":

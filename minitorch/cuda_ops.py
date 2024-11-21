@@ -358,9 +358,9 @@ def tensor_reduce(
                 cuda.syncthreads()
 
                 i = 0
-                while 2 ** i < BLOCK_DIM:
+                while 2**i < BLOCK_DIM:
                     if pos % (2 ** (i + 1)) == 0:
-                        cache[pos] = fn(cache[pos], cache[pos + 2 ** i])
+                        cache[pos] = fn(cache[pos], cache[pos + 2**i])
                     cuda.syncthreads()
                     i += 1
 
@@ -510,7 +510,9 @@ def _tensor_matrix_multiply(
         a_row, a_col = i, tile * BLOCK_DIM + pj
         # check if within the range of the matrix
         if a_row < a_shape[-2] and a_col < a_shape[-1]:
-            a_shared[pi, pj] = a_storage[batch * a_batch_stride + a_row * a_strides[-2] + a_col * a_strides[-1]]
+            a_shared[pi, pj] = a_storage[
+                batch * a_batch_stride + a_row * a_strides[-2] + a_col * a_strides[-1]
+            ]
         else:
             a_shared[pi, pj] = 0.0
 
@@ -518,7 +520,9 @@ def _tensor_matrix_multiply(
         b_row, b_col = tile * BLOCK_DIM + pi, j
         # check if within the range of the matrix
         if b_row < b_shape[-2] and b_col < b_shape[-1]:
-            b_shared[pi, pj] = b_storage[batch * b_batch_stride + b_row * b_strides[-2] + b_col * b_strides[-1]]
+            b_shared[pi, pj] = b_storage[
+                batch * b_batch_stride + b_row * b_strides[-2] + b_col * b_strides[-1]
+            ]
         else:
             b_shared[pi, pj] = 0.0
 

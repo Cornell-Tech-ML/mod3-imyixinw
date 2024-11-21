@@ -36,17 +36,6 @@ class Linear(minitorch.Module):
         self.bias = RParam(out_size)
 
     def forward(self, inputs):
-        # outputs = inputs * weights + bias
-        # batch_size = inputs.shape[0]
-        # bias_shape = self.bias.value.shape[0]
-
-        # outputs = inputs.view(*inputs.shape, 1)
-        # outputs = (outputs * self.weights.value).sum(1).view(batch_size, bias_shape)
-        # outputs += self.bias.value
-
-        # return outputs
-
-        # HERE
         batch, in_size = inputs.shape
         return (
             self.weights.value.view(1, in_size, self.out_size)

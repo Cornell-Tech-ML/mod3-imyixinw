@@ -187,19 +187,13 @@ class Sum(Function):
     @staticmethod
     def forward(ctx: Context, a: Tensor, dim: Tensor) -> Tensor:
         """Forward pass for the Sum function"""
-        # HERE: debug for 3.3
-        print("Sum forward")
-        print('a.backend.cuda ', a.backend.cuda)
         res = a.f.add_reduce(a, int(dim.item()))
-        print('DEBUG res of add_reduce: ', res)
         return res
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
     # def backward(ctx: Context, grad_output: Tensor) -> Union[Tensor, Tuple[Tensor, Tensor]]:
         """Backward pass for the Sum function"""
-        # HERE: debug for 3.3
-        print("Sum backward")
         return grad_output, 0.0
 
 

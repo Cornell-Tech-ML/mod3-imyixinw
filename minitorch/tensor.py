@@ -361,9 +361,6 @@ class Tensor:
         if dim is None:
             return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
         else:
-            print("sum over dim ", dim)
-            if self.backend.cuda:
-                print("cuda")
             return Sum.apply(self, self._ensure_tensor(dim))
 
     def mean(self, dim: Optional[int] = None) -> Tensor:

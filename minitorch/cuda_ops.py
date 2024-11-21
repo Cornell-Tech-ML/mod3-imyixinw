@@ -405,23 +405,18 @@ def _mm_practice(out: Storage, a: Storage, b: Storage, size: int) -> None:
     # TODO: Implement for Task 3.3.
     # raise NotImplementedError("Need to implement for Task 3.3")
 
-    print('running mm_practice')
-
     # move a and b to shaered memory
     a_shared = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
     b_shared = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
 
     # thread indices
     tx, ty = cuda.threadIdx.x, cuda.threadIdx.y
-    print('intialize tx, ty', tx, ty)
-    print('size', size)
 
     # initialize the output to accumulate
     dd_temp = 0.0
 
     # only excute if within the range of the matrix
     if tx < size and ty < size:
-        print('within the range of the matrix')
         # initialize the shared memory
         a_shared[tx, ty] = a[tx * size + ty]
         b_shared[tx, ty] = b[tx * size + ty]
@@ -434,7 +429,6 @@ def _mm_practice(out: Storage, a: Storage, b: Storage, size: int) -> None:
             dd_temp += a_shared[tx, k] * b_shared[k, ty]
 
         # write to global memory
-        print(tx, ty, dd_temp)
         out[tx * size + ty] = dd_temp
 
 
@@ -505,7 +499,43 @@ def _tensor_matrix_multiply(
     #    b) Copy into shared memory for b matrix
     #    c) Compute the dot produce for position c[i, j]
     # TODO: Implement for Task 3.4.
-    raise NotImplementedError("Need to implement for Task 3.4")
+    # raise NotImplementedError("Need to implement for Task 3.4")
+
+    # initialize the output to accumulate
+    dd_temp = 0.0
+
+    # loop over shared dimension of a and b
+    for tile in range((a_shape[-1] + BLOCK_DIM - 1) // BLOCK_DIM):
+        # load a into shared memory
+        a_row, a_col = i, tile * BLOCK_DIM + pj
+        # check if within the range of the matrix
+        if a_row < a_shape[-2] and a_col < a_shape[-1]:
+            a_shared[pi, pj] = a_storage[batch * a_batch_stride + a_row * a_strides[-2] + a_col * a_strides[-1]]
+        else:
+            a_shared[pi, pj] = 0.0
+
+        # load b into shared memory
+        b_row, b_col = tile * BLOCK_DIM + pi, j
+        # check if within the range of the matrix
+        if b_row < b_shape[-2] and b_col < b_shape[-1]:
+            b_shared[pi, pj] = b_storage[batch * b_batch_stride + b_row * b_strides[-2] + b_col * b_strides[-1]]
+        else:
+            b_shared[pi, pj] = 0.0
+
+        # synchronize threads
+        cuda.syncthreads()
+
+        # compute dot product
+        for k in range(BLOCK_DIM):
+            dd_temp += a_shared[pi, k] * b_shared[k, pj]
+
+        # synchronize threads
+        cuda.syncthreads()
+
+    # write to global memory
+    if i < out_shape[-2] and j < out_shape[-1]:
+        out_pos = batch * out_strides[0] + i * out_strides[-2] + j * out_strides[-1]
+        out[out_pos] = dd_temp
 
 
 tensor_matrix_multiply = jit(_tensor_matrix_multiply)

@@ -429,6 +429,7 @@ def _mm_practice(out: Storage, a: Storage, b: Storage, size: int) -> None:
             dd_temp += a_shared[tx, k] * b_shared[k, ty]
 
         # write to global memory
+        print(tx, ty, dd_temp)
         out[tx * size + ty] = dd_temp
 
 

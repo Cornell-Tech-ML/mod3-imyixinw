@@ -284,17 +284,6 @@ def tensor_map(
             o = index_to_position(out_index, out_strides)
             j = index_to_position(in_index, in_strides)
             out[o] = fn(in_storage[j])
-        # out_index = np.array(out_shape)
-        # in_index = np.array(in_shape)
-
-        # for i in range(len(out)):
-        #     to_index(i, out_shape, out_index)
-        #     broadcast_index(out_index, out_shape, in_shape, in_index)
-
-        #     out_pos = index_to_position(out_index, out_strides)
-        #     in_pos = index_to_position(in_index, in_strides)
-
-        #     out[out_pos] = fn(in_storage[in_pos])
 
     return _map
 
@@ -340,7 +329,6 @@ def tensor_zip(
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
-        # HERE: debug for 3.3
 
         out_index: Index = np.zeros(MAX_DIMS, np.int32)
         a_index: Index = np.zeros(MAX_DIMS, np.int32)
@@ -353,22 +341,6 @@ def tensor_zip(
             broadcast_index(out_index, out_shape, b_shape, b_index)
             k = index_to_position(b_index, b_strides)
             out[o] = fn(a_storage[j], b_storage[k])
-
-
-        # out_index = np.array(out_shape)
-        # a_index = np.array(a_shape)
-        # b_index = np.array(b_shape)
-
-        # for i in range(len(out)):
-        #     to_index(i, out_shape, out_index)
-        #     broadcast_index(out_index, out_shape, a_shape, a_index)
-        #     broadcast_index(out_index, out_shape, b_shape, b_index)
-
-        #     out_pos = index_to_position(out_index, out_strides)
-        #     a_pos = index_to_position(a_index, a_strides)
-        #     b_pos = index_to_position(b_index, b_strides)
-
-        #     out[out_pos] = fn(a_storage[a_pos], b_storage[b_pos])
 
     return _zip
 

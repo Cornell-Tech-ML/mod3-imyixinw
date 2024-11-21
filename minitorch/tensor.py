@@ -296,15 +296,11 @@ class Tensor:
     @property
     def size(self) -> int:
         """Returns the size of the tensor"""
-        # return int(operators.prod(self.shape))
-        # HERE
         return self._tensor.size
 
     @property
     def dims(self) -> int:
         """Returns the number of dimensions"""
-        # return len(self.shape)
-        # HERE
         return self._tensor.dims
 
     def __add__(self, b: TensorLike) -> Tensor:
@@ -329,20 +325,14 @@ class Tensor:
         return Neg.apply(self)
 
     def __radd__(self, b: TensorLike) -> Tensor:
-        # return Add.apply(self._ensure_tensor(b), self)
-        # HERE
         return self + b
 
     def __rmul__(self, b: TensorLike) -> Tensor:
-        # return Mul.apply(self._ensure_tensor(b), self)
-        # HERE
         return self * b
 
     def all(self, dim: Optional[int] = None) -> Tensor:
         """Check if all elements are true"""
         if dim is None:
-            # return All.apply(self)
-            # HERE
             return All.apply(self.view(self.size), self._ensure_tensor(0))
         return All.apply(self, self._ensure_tensor(dim))
 
@@ -368,14 +358,6 @@ class Tensor:
 
     def sum(self, dim: Optional[int] = None) -> Tensor:
         """Sum over a dimension"""
-        # if dim is not None:
-        #     return Sum.apply(self, self._ensure_tensor(dim))
-        # else:
-        #     res = self
-        #     for d in range(len(self.shape)):
-        #         res = Sum.apply(res, tensor(d))
-        #     return res.view(1)
-        # HERE
         if dim is None:
             return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
         else:

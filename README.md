@@ -34,7 +34,7 @@ The files that will be synced are:
 
 ---
 
-### Diagnostics Output for Task 3.1 and 3.2
+## Diagnostics Output for Task 3.1 and 3.2
 
 ```
 MAP
@@ -401,3 +401,12 @@ Allocation hoisting:
 No allocation hoisting found
 None
 ```
+
+## Task 5
+### CPU
+
+
+
+
+
+### GPU

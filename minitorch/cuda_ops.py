@@ -405,18 +405,23 @@ def _mm_practice(out: Storage, a: Storage, b: Storage, size: int) -> None:
     # TODO: Implement for Task 3.3.
     # raise NotImplementedError("Need to implement for Task 3.3")
 
+    print('running mm_practice')
+
     # move a and b to shaered memory
     a_shared = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
     b_shared = cuda.shared.array((BLOCK_DIM, BLOCK_DIM), numba.float64)
 
     # thread indices
     tx, ty = cuda.threadIdx.x, cuda.threadIdx.y
+    print('intialize tx, ty', tx, ty)
+    print('size', size)
 
     # initialize the output to accumulate
     dd_temp = 0.0
 
     # only excute if within the range of the matrix
     if tx < size and ty < size:
+        print('within the range of the matrix')
         # initialize the shared memory
         a_shared[tx, ty] = a[tx * size + ty]
         b_shared[tx, ty] = b[tx * size + ty]
